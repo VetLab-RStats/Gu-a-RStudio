@@ -1,0 +1,60 @@
+## Librerías
+library(dplyr)
+library(readxl)
+library(ggplot2)
+library(ggpubr)
+library(tidyverse)
+library(multcompView)
+library(plotrix)
+
+## Cargar datos
+setwd("E:/USER/desktop")
+Datos <- read_excel("Presión.xlsx")
+View(Datos)
+
+## Regresión líneal y=b+xm
+
+Regresion <- lm(formula = PAM ~ Edad, data = Datos)
+summary(Regresion)
+
+Regresion$coefficients
+
+## ggplot2 
+
+Grafica1 <- ggplot(data = Datos, aes(x=Edad, y=PAM)) + 
+  geom_point(size = 2, shape = 21, fill = "blue", alpha = 0.5, stroke = 1) + 
+  geom_smooth(method = "lm", se = FALSE, colour = "red", size = 0.5) + 
+  labs(x = "Edad (años)", y = "PAM (mmHg)") + 
+  theme_classic() + 
+  scale_x_continuous(limits = c(35,75), breaks = seq(35, 75, 10)) + 
+  scale_y_continuous(limits = c(100,170), breaks = seq(100, 170, 10)) + 
+  annotate("text", x=40, y=170, label = "PAM=80.44+1.52(Edad)") + 
+  annotate("text", x=40, y=165, label = "R^2==0.78", parse = TRUE)
+Grafica1
+
+## ggpubr
+
+Grafica2 <- ggscatter(data = Datos, x="Edad", y="PAM", add = "reg.line",
+                      color = "blue",
+                      alpha = 0.4,
+                      add.params = list(color="red"),
+                      xlab = "Edad (años)",
+                      ylab = "PAM (mmHg)") + 
+  stat_cor(aes(label = paste(after_stat(rr.label))), label.x = 40, label.y = 165) +
+  stat_regline_equation(label.x = 40, label.y = 170)
+Grafica2
+
+Grafica3 <- ggplot(data = Datos, aes(x=Edad, y=PAM)) + 
+  geom_point(size = 2, shape = 21, fill = "blue", alpha = 0.5, stroke = 1) + 
+  geom_smooth(method = "lm", se = FALSE, colour = "red", size = 0.5) + 
+  labs(x = "Edad (años)", y = "PAM (mmHg)") + 
+  theme_classic() + 
+  scale_x_continuous(limits = c(35,75), breaks = seq(35, 75, 10)) + 
+  scale_y_continuous(limits = c(100,170), breaks = seq(100, 170, 10)) + 
+  stat_cor(aes(label = paste(after_stat(rr.label))), label.x = 40, label.y = 165) +
+  stat_regline_equation(label.x = 40, label.y = 170)
+Grafica3
+
+## Exportar figura - X es el número de gráfica
+ggsave("GraficaX.png", plot = GraficaX, dpi = 1200)
+
