@@ -9,7 +9,7 @@ library(plotrix)
 
 ## Cargar datos
 setwd("E:/USER/desktop")
-Datos <- read_excel("Presión.xlsx")
+Datos <- read_excel("Presion.xlsx")
 View(Datos)
 
 ## Regresión líneal y=b+xm
